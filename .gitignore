@@ -1,0 +1,48 @@
+# ── 本机环境 / 敏感信息（禁止上传）─────────────────────────
+# Android SDK 的本机绝对路径
+local.properties
+**/local.properties
+
+# 签名、密钥、服务账号配置
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+google-services.json
+
+# 环境变量与令牌文件
+.env
+.env.*
+*.token
+*_token.txt
+
+# 本地 AI 工具会话数据与记忆（含本机路径）
+.workbuddy/
+
+# ── 构建产物 ─────────────────────────────────────────────
+.gradle/
+build/
+**/build/
+.idea/
+*.iml
+.cxx/
+captures/
+.externalNativeBuild/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# 发布产物只作为 Release 资产，不进源码仓库
+dist/
+eliaome-*.zip
+
+# ── 系统文件 ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Gradle Wrapper 的 jar 是构建必需文件，需保留 ────────────
+!android/gradle/wrapper/gradle-wrapper.jar

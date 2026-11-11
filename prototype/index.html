@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>屙了么 · 每日出货记录 + 屙了么超人</title>
+<style>
+:root{
+  --paper:#F4EBD9; --paper-card:#FFFCF4; --paper-deep:#EBDFC7; --paper-sunk:#E1D2B6;
+  --ink:#4A3B2F; --ink-soft:#6B5B4A; --ink-faint:#9A8B79;
+  --line:#C9B79F; --line-solid:#6B5B4A;
+  --stamp:#E8836B; --stamp-deep:#C9604A; --stamp-soft:#F9DFD7;
+  --grass:#8AA37B; --grass-soft:#E4EDDC;
+  --tape:#E6B84F; --tape-soft:#F7E4AE;
+  --poop:#A97142; --pee:#D89B22; --mint:#5FA98B;
+  --r-card:22px; --r-btn:16px; --r-sm:12px; --r-chip:999px;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp5:20px; --sp6:24px; --sp8:32px;
+  --fs-display:34px; --fs-h1:24px; --fs-h2:20px; --fs-h3:17px; --fs-body:15px; --fs-sm:13px; --fs-xs:12px;
+  --font-sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --font-hand:"Kaiti SC","STKaiti","KaiTi","PingFang SC","Microsoft YaHei",sans-serif;
+  --shadow-sticker:3px 4px 0 rgba(74,59,47,.13);
+  --shadow-hard:4px 5px 0 var(--ink);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:var(--font-sans);background:#241E18;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.stage{display:flex;flex-direction:column;align-items:center;gap:14px}
+.stage-note{color:#B9A88F;font-size:12px;letter-spacing:.5px;text-align:center}
+.phone{width:390px;height:844px;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;
+  background-color:var(--paper);
+  background-image:repeating-linear-gradient(180deg,rgba(107,91,74,.05) 0 1px,transparent 1px 34px);
+  box-shadow:0 32px 80px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.08);}
+.statusbar{height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:700;color:var(--ink)}
+.statusbar .sb-right{display:flex;align-items:center;gap:6px}
+.statusbar svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.screen-wrap{flex:1;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:6px 20px 26px;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabbar{height:66px;flex:0 0 66px;display:flex;align-items:center;justify-content:space-around;padding:6px 6px 2px;background:var(--paper-deep);border-top:1.5px dashed var(--line)}
+.tab{flex:1;min-width:0;height:54px;min-height:44px;border:none;background:transparent;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink-faint);font-size:10px;font-family:var(--font-sans);cursor:pointer;transition:transform .18s ease,background .18s ease}
+.tab .ic{width:21px;height:21px}
+.tab.active{color:var(--ink);font-weight:700;background:var(--tape-soft);transform:rotate(-2deg);box-shadow:2px 2px 0 rgba(74,59,47,.2)}
+.tab.active.super{background:var(--stamp-soft)}
+.homebar{height:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:center;background:var(--paper-deep)}
+.homebar i{display:block;width:118px;height:4px;border-radius:4px;background:var(--ink-soft);opacity:.7}
+.ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.ic-lg{width:28px;height:28px}
+h1,h2,h3,p{margin:0}
+.hand{font-family:var(--font-hand)}
+.eyebrow{font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:1px}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:10px 0 16px}
+.page-head h1{font-size:var(--fs-h1);font-weight:800;line-height:1.25}
+.page-head .sub{font-size:var(--fs-sm);color:var(--ink-soft);margin-top:4px}
+.icon-btn{width:44px;height:44px;min-width:44px;border:1.5px dashed var(--line-solid);border-radius:14px;background:var(--paper-card);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .16s ease}
+.icon-btn:active{transform:scale(.92)}
+.card{position:relative;background:var(--paper-card);border:1.5px dashed var(--line);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sticker);margin-bottom:14px}
+.card.tilt-a{transform:rotate(-.6deg)}
+.card.tilt-b{transform:rotate(.5deg)}
+.tape{position:absolute;top:-10px;right:24px;width:66px;height:19px;background:rgba(230,184,79,.62);transform:rotate(-7deg);
+  clip-path:polygon(0 0,100% 0,97% 50%,100% 100%,0 100%,3% 50%)}
+.stamp{display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--stamp);color:var(--stamp-deep);border-radius:10px;padding:3px 9px;font-size:11px;font-weight:800;transform:rotate(-6deg);font-family:var(--font-hand)}
+.divider{height:1px;border-top:1.5px dashed var(--line);margin:14px 0}
+.row{display:flex;align-items:center;gap:10px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--ink-soft)}
+.faint{color:var(--ink-faint)}
+.small{font-size:var(--fs-sm)}
+.tiny{font-size:var(--fs-xs)}
+.bold{font-weight:800}
+.hidden{display:none!important}
+.num{font-family:var(--font-hand);font-size:var(--fs-display);font-weight:800;line-height:1}
+
+.hero-note{padding:18px 18px 16px;min-height:112px}
+.hero-note .quote{font-family:var(--font-hand);font-size:21px;font-weight:700;line-height:1.5;margin-top:10px}
+.hero-note .sig{text-align:right;font-size:12px;color:var(--ink-faint);margin-top:8px}
+.counters{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.counter{background:var(--paper-card);border:1.5px dashed var(--line);border-radius:var(--r-card);padding:14px;box-shadow:var(--shadow-sticker)}
+.counter .lab{font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:5px}
+.counter .val{font-family:var(--font-hand);font-size:32px;font-weight:800;margin-top:4px;line-height:1.1}
+.counter .val em{font-size:14px;font-style:normal;font-family:var(--font-sans);font-weight:500;margin-left:4px;color:var(--ink-soft)}
+.counter .badge-mini{font-size:11px;background:var(--grass-soft);color:#4F6B42;padding:2px 7px;border-radius:var(--r-chip);display:inline-block;margin-top:6px}
+
+.btn{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;border-radius:var(--r-btn);padding:12px 16px;cursor:pointer;text-align:left;font-family:var(--font-sans);transition:transform .16s ease,box-shadow .16s ease;margin-bottom:12px;color:var(--ink)}
+.btn:active{transform:scale(.97)}
+.btn.disabled{pointer-events:none;opacity:.6}
+.btn .btn-emoji{font-size:28px;line-height:1}
+.btn .btn-txt{flex:1;min-width:0}
+.btn .btn-title{font-size:18px;font-weight:800;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn .btn-sub{font-size:12px;opacity:.8;margin-top:3px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn .ic{width:20px;height:20px}
+.btn-solid{background:var(--stamp);border:2px solid var(--ink);color:#fff;box-shadow:var(--shadow-hard)}
+.btn-faded{background:var(--paper-card);border:2px dashed var(--ink-soft);color:var(--ink)}
+.btn-bordered{background:transparent;border:2px solid var(--ink);color:var(--ink)}
+.btn-light{background:var(--tape-soft);border:2px solid transparent;color:var(--ink)}
+.btn-shadow{background:var(--grass);border:2px solid var(--ink);color:#fff;box-shadow:var(--shadow-hard)}
+.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.btn-sm{min-height:44px;padding:10px 14px;font-size:14px;font-weight:700;justify-content:center;border-radius:var(--r-sm)}
+
+.streak{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dots{display:flex;gap:5px}
+.dot{width:14px;height:14px;border-radius:50%;border:1.5px dashed var(--line-solid);background:transparent}
+.dot.on{background:var(--stamp);border:1.5px solid var(--ink)}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px;font-size:var(--fs-h3);font-weight:800}
+.section-title .more{font-size:12px;color:var(--ink-faint);cursor:pointer;background:none;border:none;font-family:var(--font-sans)}
+.log-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1.5px dashed var(--line)}
+.log-item:last-child{border-bottom:none}
+.log-time{font-size:12px;color:var(--ink-faint);width:42px;flex:0 0 42px;padding-top:3px;font-variant-numeric:tabular-nums}
+.log-ico{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--paper-deep);border:1.5px dashed var(--line)}
+.log-main{flex:1;min-width:0}
+.log-main .t{font-size:14px;font-weight:700}
+.log-main .d{font-size:12px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
+.empty{text-align:center;padding:28px 16px;color:var(--ink-faint)}
+.empty .big-emoji{font-size:44px;display:block;margin-bottom:10px;filter:grayscale(.3);opacity:.75}
+.empty p{font-size:13px;line-height:1.6}
+
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.month-nav .m{font-family:var(--font-hand);font-size:20px;font-weight:800;text-align:center;cursor:pointer}
+.month-nav .m small{display:block;font-family:var(--font-sans);font-size:10px;font-weight:400;color:var(--ink-faint)}
+.week-head{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.week-head span{text-align:center;font-size:11px;color:var(--ink-faint);padding:4px 0}
+.cal-row{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:5px}
+.cal-cell{aspect-ratio:1;border-radius:10px;border:1.5px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;cursor:pointer;background:var(--paper-card);position:relative;transition:transform .16s ease}
+.cal-cell:active{transform:scale(.92)}
+.cal-cell.blank{border:none;background:transparent;cursor:default}
+.cal-cell.today{border:2px solid var(--ink)}
+.cal-cell.sel{border:2px solid var(--stamp);font-weight:800;transform:rotate(-3deg)}
+.cal-cell.locked{opacity:.58}
+.cal-cell.checked{background:var(--grass-soft)}
+.cal-cell.heat1{background:#EFE0C6}.cal-cell.heat2{background:#E3CBA6}.cal-cell.heat3{background:#D0AC7B}.cal-cell.heat4{background:#BC8D58}
+.cal-cell .cnt{font-size:9px;color:var(--ink-soft);margin-top:1px;line-height:1.1}
+.legend{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-faint);margin-top:12px;justify-content:flex-end}
+.legend i{width:12px;height:12px;border-radius:4px;display:inline-block;border:1px dashed var(--line)}
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.stat-strip.four{grid-template-columns:repeat(4,1fr)}
+.stat-strip div{background:var(--paper-card);border:1.5px dashed var(--line);border-radius:14px;padding:10px 8px;text-align:center}
+.stat-strip b{display:block;font-family:var(--font-hand);font-size:22px}
+.stat-strip span{font-size:11px;color:var(--ink-faint)}
+
+.skeleton{border-radius:8px;background:linear-gradient(90deg,var(--paper-sunk),var(--paper-card),var(--paper-sunk));background-size:200% 100%;animation:shimmer 1s linear infinite}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+.big-figure{font-family:var(--font-hand);font-size:52px;font-weight:800;line-height:1}
+.ratio-bar{display:flex;height:22px;border-radius:var(--r-chip);overflow:hidden;border:2px solid var(--ink);margin-top:12px}
+.ratio-bar .a{background:var(--poop);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.ratio-bar .b{background:var(--pee);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.bars{display:flex;align-items:flex-end;gap:10px;height:110px;margin-top:14px;padding-bottom:2px;border-bottom:1.5px dashed var(--line)}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%}
+.bar-col .bar{width:100%;max-width:38px;border-radius:8px 8px 0 0;border:1.5px solid var(--ink);background:var(--grass)}
+.bar-col .lb{font-size:10px;color:var(--ink-faint);white-space:nowrap}
+.shape-row{display:flex;align-items:center;gap:8px;margin-top:9px}
+.shape-row .nm{width:64px;flex:0 0 64px;font-size:12px;color:var(--ink-soft)}
+.shape-row .track{flex:1;height:12px;background:var(--paper-deep);border-radius:var(--r-chip);overflow:hidden}
+.shape-row .fill{height:100%;background:var(--poop);border-radius:var(--r-chip)}
+.shape-row .vv{width:26px;text-align:right;font-size:11px;color:var(--ink-faint)}
+.verdict{font-family:var(--font-hand);font-size:16px;line-height:1.7}
+
+.badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.badge-card{background:var(--paper-card);border:1.5px dashed var(--line);border-radius:var(--r-card);padding:14px;min-height:158px;cursor:pointer;transition:transform .16s ease;box-shadow:var(--shadow-sticker)}
+.badge-card:active{transform:scale(.96)}
+.badge-card.locked{opacity:.66}
+.badge-card .bemoji{font-size:32px;display:block;margin-bottom:8px}
+.badge-card .bt{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge-card .bd{font-size:11px;color:var(--ink-soft);line-height:1.5;margin-top:5px;min-height:32px}
+.badge-card .prog{height:8px;background:var(--paper-deep);border-radius:var(--r-chip);margin-top:10px;overflow:hidden}
+.badge-card .prog i{display:block;height:100%;background:var(--grass);border-radius:var(--r-chip)}
+.rarity-tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:var(--r-chip);background:var(--paper-deep);color:var(--ink-faint)}
+.rarity-tag.rare{background:var(--grass-soft);color:#4F6B42}
+.rarity-tag.epic{background:var(--tape-soft);color:#8A6410}
+.rarity-tag.legend{background:var(--stamp-soft);color:var(--stamp-deep)}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1.5px dashed var(--line);min-height:56px}
+.switch-row .st{font-size:14px;font-weight:700}
+.switch-row .sd{font-size:11px;color:var(--ink-faint);margin-top:3px}
+.sw{width:50px;height:30px;min-width:50px;border-radius:var(--r-chip);background:var(--paper-sunk);border:2px solid var(--ink-soft);position:relative;cursor:pointer;transition:background .2s ease;flex:0 0 auto}
+.sw i{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:var(--paper-card);border:1.5px solid var(--ink-soft);transition:transform .2s ease}
+.sw.on{background:var(--grass);border-color:var(--ink)}
+.sw.on i{transform:translateX(20px);border-color:var(--ink)}
+
+.game-stage{position:relative;height:250px;border:2px solid var(--ink);border-radius:var(--r-card);background:var(--grass-soft);overflow:hidden;margin-bottom:12px}
+.ground{position:absolute;left:0;right:0;bottom:0;height:42px;background:rgba(138,163,123,.3);border-top:2px dashed var(--line)}
+.cloud{position:absolute;background:rgba(255,255,255,.72);border-radius:50%}
+.cloud.c1{width:44px;height:44px;top:20px;left:44px}
+.cloud.c2{width:30px;height:30px;top:14px;left:78px}
+.doll-wrap{position:absolute;right:26px;top:34px;width:120px;height:150px}
+.doll{width:120px;height:150px}
+.name-plate{position:absolute;right:26px;top:188px;max-width:130px;padding:4px 10px;background:var(--paper-card);border:1.5px solid var(--ink);border-radius:var(--r-sm);font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.launcher{position:absolute;left:20px;bottom:14px;width:52px;height:52px;border-radius:50%;background:var(--stamp-soft);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:24px}
+.projectile{position:absolute;left:0;top:0;font-size:30px;z-index:6;will-change:transform}
+.splat{position:absolute;font-size:22px;z-index:5}
+.hit-word{position:absolute;top:8px;left:50%;transform:translateX(-50%) rotate(-8deg);font-family:var(--font-hand);font-size:28px;font-weight:800;color:var(--stamp-deep);z-index:7;pointer-events:none}
+.particle{position:absolute;left:250px;top:92px;width:9px;height:9px;border-radius:2px;z-index:6;pointer-events:none;transition:transform .52s ease-out,opacity .52s ease-out}
+.stage-hint{position:absolute;left:14px;top:14px;font-size:11px;color:var(--ink-soft);z-index:4}
+.name-input{flex:1;min-width:0;height:44px;border:1.5px dashed var(--ink-soft);border-radius:var(--r-sm);background:var(--paper-card);padding:10px 12px;font-size:14px;color:var(--ink);font-family:var(--font-sans);outline:none}
+
+.overlay{position:absolute;inset:0;z-index:40;display:none}
+.overlay.open{display:block}
+.mask{position:absolute;inset:0;background:rgba(36,28,20,.5)}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:92%;overflow-y:auto;background:var(--paper);border-radius:28px 28px 0 0;border-top:2px dashed var(--line-solid);padding:10px 20px 28px;transform:translateY(101%);transition:transform .26s ease;scrollbar-width:none}
+.sheet::-webkit-scrollbar{display:none}
+.overlay.open .sheet{transform:translateY(0)}
+.sheet.full{top:0;max-height:100%;border-radius:0;border-top:none;padding:0 20px 28px}
+.grabber{width:44px;height:5px;border-radius:4px;background:var(--ink-faint);margin:0 auto 14px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sheet-head h2{font-family:var(--font-hand);font-size:23px;font-weight:800}
+.field-label{font-size:13px;font-weight:800;margin:16px 0 8px;display:flex;align-items:center;justify-content:space-between}
+.field-label .hint{font-size:11px;font-weight:400;color:var(--ink-faint)}
+.chip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-height:44px;padding:8px 14px;border-radius:var(--r-chip);border:1.5px dashed var(--line-solid);background:var(--paper-card);color:var(--ink);font-size:13px;font-family:var(--font-sans);cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .16s ease,background .16s ease}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--stamp);border:2px solid var(--ink);color:#fff;font-weight:800;box-shadow:2px 3px 0 var(--ink)}
+.shape-chip{flex-direction:column;min-width:66px;height:76px;justify-content:center;gap:2px;border-radius:14px;padding:6px}
+.shape-chip .se{font-size:24px;line-height:1}
+.shape-chip .sn{font-size:10px;white-space:nowrap}
+.knob-wrap{background:var(--paper-card);border:1.5px dashed var(--line);border-radius:var(--r-card);padding:14px 16px}
+input[type=range]{width:100%;height:28px;appearance:none;background:transparent;cursor:pointer;margin:6px 0}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:var(--paper-sunk);border:1px dashed var(--line-solid)}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:26px;height:26px;border-radius:50%;background:var(--tape);border:2px solid var(--ink);margin-top:-10px;box-shadow:2px 2px 0 var(--ink)}
+input[type=range]::-moz-range-track{height:8px;border-radius:8px;background:var(--paper-sunk);border:1px dashed var(--line-solid)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--tape);border:2px solid var(--ink)}
+textarea{width:100%;min-height:70px;resize:none;border:1.5px dashed var(--line-solid);border-radius:var(--r-sm);background:var(--paper-card);padding:12px;font-family:var(--font-sans);font-size:14px;color:var(--ink);outline:none}
+textarea::placeholder{color:var(--ink-faint)}
+.slide{position:relative;height:62px;border-radius:var(--r-chip);background:var(--paper-deep);border:2px dashed var(--ink-soft);overflow:hidden;touch-action:none;user-select:none;margin-top:18px;display:flex;align-items:center;justify-content:center}
+.slide-label{font-size:14px;font-weight:800;color:var(--ink-soft);pointer-events:none;padding-left:36px}
+.slide-thumb{position:absolute;left:4px;top:4px;width:50px;height:50px;border-radius:50%;background:var(--stamp);border:2px solid var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;cursor:grab;box-shadow:2px 2px 0 var(--ink);z-index:2}
+.slide-thumb .ic{width:22px;height:22px}
+.slide.ok{background:var(--grass-soft);border-color:var(--grass)}
+.slide.ok .slide-label{color:#4F6B42}
+.slide.err{border-color:var(--stamp);background:var(--stamp-soft)}
+.form-error{font-size:12px;color:var(--stamp-deep);margin-top:8px;font-weight:700}
+.toast{position:absolute;left:20px;right:20px;top:56px;z-index:70;background:var(--paper-card);border:2px solid var(--ink);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-hard);transform:translateY(-160%);transition:transform .26s ease;display:flex;gap:12px;align-items:flex-start}
+.toast.show{transform:translateY(0)}
+.toast .temoji{font-size:26px}
+.toast .tt{font-size:15px;font-weight:800}
+.toast .td{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
+#confetti{position:absolute;inset:0;z-index:60;pointer-events:none}
+.pop-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);z-index:55;background:var(--paper-card);border:2px solid var(--ink);border-radius:22px;padding:20px;box-shadow:var(--shadow-hard);opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;width:300px;text-align:center}
+.pop-card.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.pop-card .pe{font-size:46px;display:block;margin-bottom:8px}
+.pop-card h3{font-family:var(--font-hand);font-size:22px;margin-bottom:6px}
+.pop-card p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.pop-card .btn{margin-top:16px;margin-bottom:0}
+.shake{animation:shake .3s ease}
+.hit-shake{animation:shake .28s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+<symbol id="i-today" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="9.2" cy="10" r=".9" fill="currentColor" stroke="none"/><circle cx="14.8" cy="10" r=".9" fill="currentColor" stroke="none"/><path d="M8.6 14.4c1 1.4 2.1 2.1 3.4 2.1s2.4-.7 3.4-2.1"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/><circle cx="8.5" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="14" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-report" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M6 20v-6M11 20V7M16 20v-9M20 20v-4"/></symbol>
+<symbol id="i-badge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5 7 22l5-2.6L17 22l-1.5-8.5"/><path d="M12 6.5v4M10 8.5h4"/></symbol>
+<symbol id="i-super" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 6 13h5l-2 8.5L18 10h-5z"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="#FFFCF4"/><circle cx="15" cy="12" r="2" fill="#FFFCF4"/><circle cx="8" cy="17" r="2" fill="#FFFCF4"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 4.5 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 3-6.5 6-11Z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3M20 5v6h-6"/></symbol>
+<symbol id="i-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-battery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2"/><rect x="4" y="9" width="12" height="6" rx="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-signal" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M2 20h3v-5H2v5Zm5 0h3v-9H7v9Zm5 0h3V8h-3v12Zm5 0h3V4h-3v16Z"/></symbol>
+</svg>
+
+<div class="stage">
+<div class="phone" id="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sb-right"><svg><use href="#i-signal"/></svg><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></div>
+  </div>
+
+  <div class="screen-wrap">
+    <!-- 今日 -->
+    <section class="screen active" id="s-today">
+      <div class="page-head">
+        <div><div class="eyebrow" id="todayEyebrow">今日 · 手账</div><h1 class="hand">早上好，掌柜的</h1><div class="sub">今天也要顺顺畅畅的呀</div></div>
+        <button class="icon-btn" id="btnSettings" aria-label="设置"><svg class="ic ic-lg"><use href="#i-settings"/></svg></button>
+      </div>
+      <div class="card hero-note tilt-a">
+        <div class="tape"></div>
+        <div class="between"><span class="eyebrow">今日手账 · 第 6 页</span><span class="stamp">已卸货</span></div>
+        <div class="quote" id="heroQuote">今日已卸货 2 坨，<br>地球轻了约 0.4kg。</div>
+        <div class="sig">—— 屙了么 · 自动记录</div>
+      </div>
+      <div class="counters">
+        <div class="counter"><div class="lab">💩 开大</div><div class="val" id="bigCount">2<em>坨</em></div><span class="badge-mini">比昨天 +1</span></div>
+        <div class="counter"><div class="lab">💧 开小</div><div class="val" id="smallCount">5<em>次</em></div><span class="badge-mini">补水充足</span></div>
+      </div>
+      <button class="btn btn-solid" id="btnBig"><span class="btn-emoji">💩</span><span class="btn-txt"><span class="btn-title">开大 · 记一坨</span><span class="btn-sub">选形态、盖章、领一句毒鸡汤</span></span><svg class="ic"><use href="#i-chevron"/></svg></button>
+      <button class="btn btn-faded" id="btnSmall"><span class="btn-emoji">💧</span><span class="btn-txt"><span class="btn-title">开小 · 放个水</span><span class="btn-sub">3 秒搞定，不耽误事</span></span><svg class="ic"><use href="#i-plus"/></svg></button>
+      <div class="card" style="padding:14px 16px">
+        <div class="streak"><div><div class="small bold" id="streakText">连续 6 天有出货</div><div class="tiny faint" style="margin-top:3px">日历里只有今天能盖章</div></div><div class="dots" id="streakDots"></div></div>
+      </div>
+      <div class="section-title"><span>今日流水</span><button class="more" id="btnClearToday">清空演示</button></div>
+      <div class="card" style="padding:4px 16px" id="todayLog"></div>
+      <div class="card hidden" id="todayEmpty"><div class="empty"><span class="big-emoji">📄</span><p>今天还是一张白纸，<br>等你落笔。</p></div></div>
+      <button class="btn btn-light btn-sm" id="btnShake" style="margin-top:16px">🫨 摇一摇手机，听个响</button>
+      <div style="height:8px"></div>
+    </section>
+
+    <!-- 日历 · 跨月打卡 -->
+    <section class="screen" id="s-calendar">
+      <div class="page-head"><div><div class="eyebrow">出货打卡日历</div><h1 class="hand">过去封存，未来锁上</h1><div class="sub">只有今天能盖章，翻月随便翻</div></div></div>
+      <div class="card">
+        <div class="month-nav">
+          <button class="icon-btn" id="prevMonth" aria-label="上个月"><svg class="ic"><use href="#i-chevron"/></svg></button>
+          <div class="m" id="monthLabel">2026年 11月<small>点标题回到今天</small></div>
+          <button class="icon-btn" id="nextMonth" aria-label="下个月" style="transform:rotate(180deg)"><svg class="ic"><use href="#i-chevron"/></svg></button>
+        </div>
+        <div class="week-head"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+        <div id="calGrid"></div>
+        <div class="legend">少 <i style="background:var(--paper-card)"></i><i style="background:var(--grass-soft)"></i><i style="background:#E3CBA6"></i><i style="background:#BC8D58"></i> 多　🔒 未来</div>
+      </div>
+      <div class="stat-strip">
+        <div><b id="mBig">0</b><span>本月开大</span></div>
+        <div><b id="mSmall">0</b><span>本月开小</span></div>
+        <div><b id="mChecked">0</b><span>打卡天数</span></div>
+      </div>
+      <div class="section-title"><span id="dayTitle">今天</span><span class="tiny faint" id="dayCount">共 0 次</span></div>
+      <div class="card" id="dayDetail"></div>
+      <div style="height:8px"></div>
+    </section>
+
+    <!-- 战报 -->
+    <section class="screen" id="s-report">
+      <div class="page-head"><div><div class="eyebrow">第 46 周 · 一本正经</div><h1 class="hand">本周战报</h1><div class="sub">数据不会说谎，但它会笑</div></div><span class="stamp">内部资料</span></div>
+      <div id="reportLoading">
+        <div class="card"><div class="skeleton" style="height:22px;width:45%"></div><div class="skeleton" style="height:60px;margin-top:14px"></div><div class="skeleton" style="height:14px;margin-top:14px;width:80%"></div></div>
+        <div class="card"><div class="skeleton" style="height:110px"></div></div>
+        <div class="small faint" style="text-align:center;margin-top:8px">正在召集数据研究院院士…</div>
+      </div>
+      <div id="reportBody" class="hidden">
+        <div class="card tilt-a"><div class="tape"></div><div class="eyebrow">本周总出货量</div>
+          <div class="row" style="align-items:baseline;gap:6px;margin-top:6px"><span class="big-figure">12</span><span class="hand" style="font-size:18px">坨</span><span class="faint small" style="margin-left:12px">放水 31 次</span></div>
+          <div class="ratio-bar"><div class="a" style="width:28%">大 28%</div><div class="b" style="width:72%">小 72%</div></div>
+        </div>
+        <div class="card"><div class="between"><span class="bold small">时段分布</span><span class="tiny faint">单位：次</span></div><div class="bars" id="timeBars"></div><div class="tiny faint" style="margin-top:8px">黄金时段：08:00–10:00，稳定得可疑</div></div>
+        <div class="card"><div class="between"><span class="bold small">形态分布</span><span class="tiny faint">布里斯托 1–7 型</span></div><div id="shapeBars" style="margin-top:6px"></div></div>
+        <div class="card tilt-b" style="background:var(--tape-soft)"><div class="between"><span class="bold small">数据研究院结论</span><span class="stamp">已盖章</span></div>
+          <p class="verdict" style="margin-top:10px">「综合评估：输出稳定、形态优良、时段规律。建议继续保持膳食纤维摄入，并减少第 3 型以下出现频率。」</p>
+          <div class="sig tiny faint" style="text-align:right;margin-top:10px">—— 屙了么数据研究院</div></div>
+        <button class="btn btn-bordered btn-sm" id="btnRegen"><svg class="ic"><use href="#i-refresh"/></svg> 重新生成战报</button>
+      </div>
+      <div style="height:8px"></div>
+    </section>
+
+    <!-- 荣誉 -->
+    <section class="screen" id="s-badge">
+      <div class="page-head"><div><div class="eyebrow" id="badgeEyebrow">荣誉墙</div><h1 class="hand">一坨一荣誉</h1><div class="sub">把不好意思说的事，做成勋章</div></div></div>
+      <div class="card" style="padding:14px 16px">
+        <div class="progress-head between"><span class="small bold">收集进度</span><span class="small hand" id="badgeProgressText" style="font-size:18px">0 / 64</span></div>
+        <div class="prog" style="height:10px;background:var(--paper-deep);border-radius:var(--r-chip);overflow:hidden"><i id="badgeProgressBar" style="display:block;width:0%;height:100%;background:var(--stamp);border-radius:var(--r-chip)"></i></div>
+        <div class="tiny faint" style="margin-top:9px">战斗模式相关徽章会随发射、命中、弹体收集实时涨进度。</div>
+      </div>
+      <div class="filter-row" id="filterRow"></div>
+      <div class="tiny faint" style="margin:8px 0" id="badgeCount"></div>
+      <div class="badge-grid" id="badgeGrid"></div>
+      <div style="height:8px"></div>
+    </section>
+
+    <!-- 屙了么超人 · 战斗模式 -->
+    <section class="screen" id="s-game">
+      <div class="page-head">
+        <div><div class="eyebrow">战斗模式 · 第 5 号入口</div><h1 class="hand">屙了么超人</h1><div class="sub">把不开心糊到人偶脸上</div></div>
+        <button class="icon-btn" id="btnGameBack" aria-label="返回"><svg class="ic ic-lg"><use href="#i-chevron"/></svg></button>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="field-label" style="margin-top:0"><span>人偶名称 · 1–12 字</span><span class="hint">改完点「立人偶」</span></div>
+        <div class="row"><input id="dollNameInput" class="name-input" value="讨厌的周一" placeholder="给TA起个名字" autocomplete="off">
+          <button class="btn btn-light btn-sm" id="btnSetName" style="width:96px;flex:0 0 96px;margin:0">立人偶</button></div>
+        <div class="form-error hidden" id="nameError"></div>
+        <div class="tiny faint" style="margin-top:8px">当前人偶：<b id="dollNameLabel">讨厌的周一</b></div>
+      </div>
+
+      <div class="game-stage" id="gameStage">
+        <div class="cloud c1"></div><div class="cloud c2"></div>
+        <div class="ground"></div>
+        <div class="stage-hint" id="stageHint">人偶已就位，选个弹体吧</div>
+        <div class="doll-wrap" id="dollWrap">
+          <svg class="doll" viewBox="0 0 120 150">
+            <path d="M47 108 L43 141 M73 108 L77 141" stroke="#4A3B2F" stroke-width="6" stroke-linecap="round"/>
+            <path d="M32 73 L14 92 M88 73 L106 92" stroke="#4A3B2F" stroke-width="6" stroke-linecap="round"/>
+            <rect x="30" y="63" width="60" height="48" rx="14" fill="#E6B84F" stroke="#4A3B2F" stroke-width="3"/>
+            <circle cx="60" cy="39" r="28" fill="#FFE0B2" stroke="#4A3B2F" stroke-width="3"/>
+            <g id="faceNormal"><circle cx="50" cy="34" r="3.5" fill="#4A3B2F"/><circle cx="70" cy="34" r="3.5" fill="#4A3B2F"/><path d="M48 45 Q60 56 72 45" fill="none" stroke="#4A3B2F" stroke-width="3" stroke-linecap="round"/></g>
+            <g id="faceHit" class="hidden"><path d="M45 29 l10 10 M55 29 l-10 10 M65 29 l10 10 M75 29 l-10 10" stroke="#4A3B2F" stroke-width="3" stroke-linecap="round"/><path d="M47 48 Q53 42 60 48 Q67 54 73 48" fill="none" stroke="#4A3B2F" stroke-width="3" stroke-linecap="round"/></g>
+          </svg>
+          <div id="splatLayer"></div>
+        </div>
+        <div class="name-plate" id="namePlate">讨厌的周一</div>
+        <div class="launcher">🦸</div>
+        <div class="projectile hidden" id="projectile">🍌</div>
+        <div class="hit-word hidden" id="hitWord">啪叽！</div>
+        <div id="particleLayer"></div>
+      </div>
+
+      <div class="stat-strip four" style="margin-top:0">
+        <div><b id="gShots">0</b><span>发射</span></div>
+        <div><b id="gHits">0</b><span>命中</span></div>
+        <div><b id="gCombo">0</b><span>连击</span></div>
+        <div><b id="gScore">0</b><span>得分</span></div>
+      </div>
+
+      <div class="section-title" style="margin-top:12px"><span>选择弹体</span><span class="tiny faint" id="ammoPower">威力 ★★★★</span></div>
+      <div class="chip-row" id="ammoRow"></div>
+      <div class="card" style="margin-top:10px;padding:10px 14px"><div class="tiny muted" id="ammoQuip"></div></div>
+
+      <button class="btn btn-solid" id="btnFire" style="margin-top:14px"><span class="btn-emoji" id="fireEmoji">🍌</span><span class="btn-txt"><span class="btn-title" id="fireTitle">发射！</span><span class="btn-sub" id="fireSub">把这一发糊到人偶脸上</span></span><svg class="ic"><use href="#i-super"/></svg></button>
+      <div class="row" style="gap:10px">
+        <button class="btn btn-bordered btn-sm" id="btnReset" style="flex:1">🔄 重置对局</button>
+        <button class="btn btn-light btn-sm" id="btnBack2" style="flex:1">收工返回</button>
+      </div>
+      <div class="card hidden" id="hitQuipCard" style="background:var(--tape-soft)"><div class="tiny faint">现场播报</div><div class="hand" id="hitQuip" style="font-size:16px;margin-top:6px;line-height:1.5"></div></div>
+      <div class="tiny faint" style="line-height:1.7;margin-top:8px">规则：名称需 1–12 字、不含换行与尖括号；可重复发射，重置只清本局；日历里的未来与历史记录不受影响。</div>
+      <div style="height:8px"></div>
+    </section>
+  </div>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-tab="today"><svg class="ic"><use href="#i-today"/></svg><span>今日</span></button>
+    <button class="tab" data-tab="calendar"><svg class="ic"><use href="#i-calendar"/></svg><span>日历</span></button>
+    <button class="tab" data-tab="report"><svg class="ic"><use href="#i-report"/></svg><span>战报</span></button>
+    <button class="tab" data-tab="badge"><svg class="ic"><use href="#i-badge"/></svg><span>荣誉</span></button>
+    <button class="tab super" data-tab="game"><svg class="ic"><use href="#i-super"/></svg><span>超人</span></button>
+  </nav>
+  <div class="homebar"><i></i></div>
+
+  <!-- 记录弹层 -->
+  <div class="overlay" id="recordOverlay">
+    <div class="mask" data-close="record"></div>
+    <div class="sheet" id="recordSheet">
+      <div class="grabber"></div>
+      <div class="sheet-head"><h2 id="sheetTitle">记一笔 · 开大</h2><button class="icon-btn" data-close="record" aria-label="关闭"><svg class="ic"><use href="#i-close"/></svg></button></div>
+      <div class="field-label"><span>类型</span><span class="hint">选错了还能改</span></div>
+      <div class="chip-row" id="typeRow"><button class="chip on" data-type="big">💩 开大</button><button class="chip" data-type="small">💧 开小</button></div>
+      <div id="bigOnly">
+        <div class="field-label"><span>形态 · 布里斯托分型</span><span class="hint" id="shapeHint">第 4 型 · 香蕉船</span></div>
+        <div class="chip-row" id="shapeRow"></div>
+        <div class="card knob-wrap" style="margin-top:14px;margin-bottom:0">
+          <div class="between"><span class="small bold">份量</span><span class="small hand" id="amountLabel" style="font-size:17px">常规</span></div>
+          <input type="range" id="amountRange" min="1" max="5" step="1" value="3" aria-label="份量">
+          <div class="between tiny faint"><span>一点点</span><span>惊艳全场</span></div>
+        </div>
+      </div>
+      <div class="field-label"><span>耗时</span><span class="hint">诚实一点</span></div>
+      <div class="chip-row" id="minuteRow"></div>
+      <div class="field-label"><span>此刻心情</span><span class="hint">Bencho · emoji reactions</span></div>
+      <div class="chip-row" id="moodRow"></div>
+      <div class="field-label"><span>备注</span><span class="hint">可不填</span></div>
+      <textarea id="noteInput" placeholder="今天想说点啥…比如：这坨值得纪念"></textarea>
+      <div class="slide" id="slideTrack"><span class="slide-label" id="slideLabel">向右滑动 → 盖章出货</span><div class="slide-thumb" id="slideThumb"><svg class="ic"><use href="#i-chevron"/></svg></div></div>
+      <div class="form-error hidden" id="formError">先选个形态嘛，不然没法盖章 😅</div>
+      <div class="tiny faint" style="text-align:center;margin-top:10px">Bencho · Slide to confirm ／ Watermelon · Morphing button</div>
+    </div>
+  </div>
+
+  <!-- 设置弹层 -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="mask" data-close="settings"></div>
+    <div class="sheet full" id="settingsSheet">
+      <div class="page-head" style="margin-top:18px">
+        <div><div class="eyebrow">我的 · 设置</div><h1 class="hand">掌柜的档案</h1><div class="sub">连续打卡 6 天 · 共记录 148 次</div></div>
+        <button class="icon-btn" data-close="settings" aria-label="返回"><svg class="ic"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="card tilt-a"><div class="tape"></div>
+        <div class="row"><div style="width:52px;height:52px;border-radius:16px;background:var(--stamp-soft);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:28px">🐷</div>
+        <div><div class="bold" style="font-size:17px">掌柜的</div><div class="tiny faint" style="margin-top:4px">ID: ELIAOMO_0001 · 注册于 2026/09/28</div></div></div>
+      </div>
+      <div class="section-title"><span>日常</span></div>
+      <div class="card" style="padding:4px 16px" id="switchList"></div>
+      <div class="section-title"><span>数据</span></div>
+      <div class="card">
+        <button class="btn btn-bordered btn-sm" id="btnExport"><svg class="ic"><use href="#i-share"/></svg> 导出我的战绩</button>
+        <div class="hidden" id="exportErr" style="margin-top:10px;padding:12px;border:1.5px dashed var(--stamp);border-radius:12px;background:var(--stamp-soft)">
+          <div class="small bold" style="color:var(--stamp-deep)">⚠️ 导出失败：手机没插 U 盘</div>
+          <div class="tiny muted" style="margin-top:5px">开个玩笑。点下面按钮再来一次。</div>
+          <button class="btn btn-light btn-sm" id="btnRetry" style="margin-top:10px;margin-bottom:0">再试一次</button>
+        </div>
+        <div class="hidden small" id="exportOk" style="color:#4F6B42;font-weight:700;padding:8px 0">✅ 已导出到 下载/屙了么_战绩.txt（假装）</div>
+      </div>
+      <div class="card" style="background:var(--paper-deep)"><div class="small bold">关于屙了么</div>
+        <p class="tiny muted" style="line-height:1.7;margin-top:6px">v1.1 · 一本正经地记录不正经的事。<br>设计语言：HeroUI 按钮变体 ／ Watermelon 变形按钮与标签页 ／ Bencho 彩纸、滑动确认与热力图。</p></div>
+      <div style="height:12px"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><span class="temoji" id="toastEmoji">🎉</span><div><div class="tt" id="toastTitle">出货成功！</div><div class="td" id="toastDesc">地球轻了 0.2kg，辛苦了。</div></div></div>
+  <div class="pop-card" id="popCard"><span class="pe" id="popEmoji">🏆</span><h3 id="popTitle">黄金便便</h3><p id="popDesc"></p><button class="btn btn-solid btn-sm" id="popClose">收下这份荣誉</button></div>
+  <canvas id="confetti"></canvas>
+</div>
+<div class="stage-note">390 × 844 · 屙了么 v1.1 高保真原型 · 底部 5 个入口，点「超人」进入战斗模式</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+const TODAY=new Date(); TODAY.setHours(0,0,0,0);
+
+const SHAPES=[
+ {id:1,e:'🫘',n:'羊屎蛋',d:'倔强型'},{id:2,e:'🍇',n:'葡萄串',d:'纠结型'},
+ {id:3,e:'🌽',n:'玉米棒',d:'标准型'},{id:4,e:'🍌',n:'香蕉船',d:'顺滑型'},
+ {id:5,e:'🍮',n:'软糖',d:'松散型'},{id:6,e:'🥣',n:'泥浆',d:'奔放型'},
+ {id:7,e:'💧',n:'纯液体',d:'无需描述'}];
+const AMOUNTS=['一点点','偏少','常规','有点多','惊艳全场'];
+const MINUTES=['＜1 分','约 3 分','约 5 分','10 分+','记不清了'];
+const MOODS=[{e:'😌',n:'舒坦'},{e:'😎',n:'从容'},{e:'🫠',n:'艰难'},{e:'🚀',n:'喷射'},{e:'🤔',n:'意外'}];
+const QUIPS=['地球轻了 0.2kg，辛苦了。','这一坨，很有分量。','今日 KPI 已完成，可以下班了。','肠胃董事会已通过本次提案。','恭喜，又为厕所贡献了一次 GDP。','记录已归档，历史会记住今天。','顺滑得不像话，建议申报非遗。'];
+const HIT_QUIPS=['命中！人偶的表情管理彻底失效。','正中眉心，这一发很有故事。','啪叽——名牌都歪了。','伤害不高，但侮辱性极强。','人偶表示：我想换个班。','现场过于激烈，已打码。','这一坨，飞得比工资到账还快。'];
+
+const AMMO=[
+ {id:1,e:'🫘',n:'羊屎蛋',p:1,c:'#A97142',q:'粒粒分明，像下了一阵豆子雨',f:'fast'},
+ {id:2,e:'🍇',n:'葡萄串',p:2,c:'#7C5AA6',q:'连成一串，命中率有点随缘',f:'wobble'},
+ {id:3,e:'🌽',n:'玉米棒',p:3,c:'#D89B22',q:'标准型，稳得像上班打卡',f:'straight'},
+ {id:4,e:'🍌',n:'香蕉船',p:4,c:'#E6B84F',q:'顺滑得不像话，建议申报非遗',f:'arc'},
+ {id:5,e:'🍮',n:'软糖',p:2,c:'#E8836B',q:'软趴趴，但糊得最均匀',f:'wobble'},
+ {id:6,e:'🥣',n:'泥浆',p:5,c:'#6B5B4A',q:'范围伤害，画面不宜久看',f:'heavy'},
+ {id:7,e:'💧',n:'纯液体',p:3,c:'#5FA98B',q:'无需描述，懂的都懂',f:'fast'}];
+
+const BADGE_RAW=[
+ ['🏆','黄金便便','连续 7 天有出货','传说'],['🚀','喷射战士','单次耗时 ＜1 分钟','稀有'],
+ ['💧','水王','单日开小 10 次','稀有'],['⏰','早八准时','连续 5 天 8 点前后','普通'],
+ ['🌙','深夜食堂','凌晨 2 点也来一笔','稀有'],['📅','七日不断更','连续打卡 7 天','稀有'],
+ ['🎨','形态收藏家','集齐 7 种形态','史诗'],['⚖️','一坨千金','单月累计 30 坨','史诗'],
+ ['🌅','月初开门红','每月 1 号有记录','普通'],['🏁','月末收官','每月最后一天有记录','普通'],
+ ['🛋️','周末不休息','周六周日都出货','普通'],['💼','工作日全勤','周一到周五无断档','稀有'],
+ ['🔥','连续三十天','连续打卡 30 天','传说'],['💯','百次俱乐部','累计记录 100 次','史诗'],
+ ['🖐️','五百次传说','累计记录 500 次','传说'],['👑','千次里程碑','累计记录 1000 次','传说'],
+ ['🍌','香蕉船船长','第 4 型出现 20 次','稀有'],['🫘','羊屎蛋猎人','第 1 型出现 10 次','普通'],
+ ['🌽','玉米棒爱好者','第 3 型出现 15 次','普通'],['🍮','软糖鉴赏家','第 5 型出现 10 次','普通'],
+ ['🥣','泥浆艺术家','第 6 型出现 8 次','稀有'],['💦','纯液体大师','第 7 型出现 5 次','史诗'],
+ ['🍇','葡萄串收藏家','第 2 型出现 10 次','普通'],['📖','七型全图鉴','七种形态各至少一次','史诗'],
+ ['⚡','三分钟战士','单次耗时 ＜3 分钟','普通'],['🕰️','十分钟的沉思','单次耗时 ＞10 分钟','普通'],
+ ['🧘','一小时哲学家','单次耗时 ＞60 分钟','传说'],['🏃','速通达人','连续 5 次 ＜1 分钟','稀有'],
+ ['🐦','早起鸟儿','早上 6 点前记录','稀有'],['☀️','午间例行','12 点到 14 点记录','普通'],
+ ['🌇','傍晚散步','18 点到 20 点记录','普通'],['🌌','凌晨三点','凌晨 3 点记录','史诗'],
+ ['🍚','饭点准时','饭后 30 分钟内记录','普通'],['☕','咖啡因信徒','喝咖啡后记录','普通'],
+ ['🥬','膳食纤维标兵','连续 7 天备注蔬菜','稀有'],['🐉','火龙果勇士','备注提到火龙果','史诗'],
+ ['🌶️','火锅挑战者','备注提到火锅','普通'],['🧋','奶茶代价','备注提到奶茶','普通'],
+ ['✈️','出差不断更','出差期间仍打卡','稀有'],['🗺️','旅行打卡','在 3 个不同城市记录','史诗'],
+ ['🎏','节假日坚守','法定节假日有记录','稀有'],['🧨','春节特别篇','大年初一有记录','传说'],
+ ['🎂','生日纪念','生日当天有记录','史诗'],['🎆','跨年最后一坨','12 月 31 日有记录','传说'],
+ ['🎇','新年第一坨','1 月 1 日有记录','传说'],['😤','周一勇气奖','连续 4 个周一有记录','普通'],
+ ['🎉','周五解脱奖','连续 4 个周五有记录','普通'],['🥇','月度冠军','单月出货量第一','史诗'],
+ ['📊','季度劳模','连续 3 个月满勤','传说'],['🏅','年度总冠军','全年无断档','传说'],
+ ['🍃','零负担日','一整天没有记录','普通'],['🎒','满载而归','份量选「惊艳全场」','稀有'],
+ ['🫧','一点点先生','份量选「一点点」','普通'],['✨','惊艳全场','单次获得最高评价','史诗'],
+ ['😌','心情全收集','五种心情都用过','稀有'],['✍️','备注小作文','单条备注超过 30 字','稀有'],
+ ['📝','备注诗人','累计写下 10 条备注','史诗'],['🍜','毒鸡汤品鉴师','集齐 7 句毒鸡汤','稀有'],
+ ['🗓️','热力图画家','单月打卡超过 25 天','史诗'],['🦸','屙了么超人','战斗模式发射 10 次','传说','shots'],
+ ['🎯','百发百中','战斗模式命中 20 次','史诗','hits'],['🌈','弹体收藏家','用过 7 种形状弹体','史诗','shapes'],
+ ['🧟','人偶克星','单局命中 10 次','稀有'],['🕹️','战斗模式常客','累计重置 5 局','普通']];
+const UNLOCKED=new Set([0,1,2,3,6,8,10,16,24,29,32,45]);
+const BADGES=BADGE_RAW.map((x,i)=>({e:x[0],n:x[1],d:x[2],r:x[3],dyn:x[4]||'',ok:UNLOCKED.has(i)&&!x[4],p:UNLOCKED.has(i)&&!x[4]?100:(x[4]?0:15+(i*37)%75)}));
+const FILTERS=[{k:'all',n:'全部'},{k:'ok',n:'已解锁'},{k:'no',n:'未解锁'},{k:'legend',n:'传说'}];
+
+function loadJSON(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
+function saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+const S={tab:'today',returnTab:'today',big:2,small:5,streak:6,
+ sheetType:'big',shape:4,amount:3,minutes:1,mood:0,note:'',
+ records:[
+  {time:'08:12',type:'big',title:'开大 · 香蕉船（4 型）',desc:'顺滑得不像话，建议申报非遗',emoji:'💩'},
+  {time:'10:36',type:'small',title:'开小 · 常规',desc:'例行公事，稳',emoji:'💧'},
+  {time:'13:05',type:'small',title:'开小 · 有点多',desc:'中午那杯美式立功了',emoji:'💧'},
+  {time:'19:48',type:'big',title:'开大 · 玉米棒（3 型）',desc:'很有分量，盖章',emoji:'💩'},
+  {time:'21:10',type:'small',title:'开小 · 常规',desc:'睡前最后一次',emoji:'💧'}],
+ reportLoaded:false,settings:{remind:true,privacy:false,shake:true,quiet:false},exportState:'idle',
+ sliding:false,slideX:0,filter:'all'};
+
+const cal={year:TODAY.getFullYear(),month:TODAY.getMonth(),selected:keyOf(TODAY),checked:new Set(loadJSON('eliamo_checkins',[]))};
+let G=loadJSON('eliamo_game',{shots:0,hits:0,shapes:[]});
+if(!G||typeof G!=='object')G={shots:0,hits:0,shapes:[]};
+if(!Array.isArray(G.shapes))G.shapes=[];
+
+const game={name:'讨厌的周一',ammo:4,shots:0,hits:0,combo:0,score:0,splats:[],flying:false,hit:false,quip:''};
+
+function keyOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fromKey(k){const a=k.split('-').map(Number);return new Date(a[0],a[1]-1,a[2]);}
+function stateOf(d){const t=new Date(d.getFullYear(),d.getMonth(),d.getDate());return t>TODAY?'future':t<TODAY?'past':'today';}
+function dayInfo(d){
+ const k=keyOf(d),st=stateOf(d);
+ if(st==='future')return {big:0,small:0,total:0,checked:false};
+ if(st==='today')return {big:S.big,small:S.small,total:S.big+S.small,checked:cal.checked.has(k)};
+ const seed=(d.getFullYear()*372+(d.getMonth()+1)*31+d.getDate()*17)%97;
+ const big=seed%4===0?0:(seed%3)+1,small=(seed%5)+1;
+ return {big,small,total:big+small,checked:(big+small)>0&&seed%3!==0};
+}
+function heatLevel(n){return n===0?0:n<=2?1:n<=4?2:n<=6?3:4;}
+
+function renderToday(){
+ $('bigCount').innerHTML=S.big+'<em>坨</em>';
+ $('smallCount').innerHTML=S.small+'<em>次</em>';
+ $('heroQuote').innerHTML=(S.big===0&&S.small===0)?'今天还没开张，<br>肠胃在摸鱼。':'今日已卸货 '+S.big+' 坨，<br>地球轻了约 '+(S.big*0.2).toFixed(1)+'kg。';
+ $('todayEyebrow').textContent=(TODAY.getMonth()+1)+'月'+TODAY.getDate()+'日 · 今日手账';
+ $('streakText').textContent='连续 '+S.streak+' 天有出货';
+ $('streakDots').innerHTML=Array.from({length:7},(_,i)=>'<i class="dot '+(i<Math.min(S.streak,7)?'on':'')+'"></i>').join('');
+ const has=S.records.length>0;
+ $('todayLog').classList.toggle('hidden',!has);$('todayEmpty').classList.toggle('hidden',has);
+ $('todayLog').innerHTML=S.records.map(r=>'<div class="log-item"><div class="log-time">'+r.time+'</div><div class="log-ico">'+r.emoji+'</div><div class="log-main"><div class="t">'+r.title+'</div><div class="d">'+r.desc+'</div></div></div>').join('');
+}
+
+function renderCalendar(){
+ const y=cal.year,m=cal.month,first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+ const rows=Math.ceil((first+days)/7);
+ $('monthLabel').innerHTML=y+'年 '+(m+1)+'月<small>点标题回到今天</small>';
+ let html='',mb=0,ms=0,mc=0;
+ for(let w=0;w<rows;w++){
+  html+='<div class="cal-row">';
+  for(let c=0;c<7;c++){
+   const d=w*7+c-first+1;
+   if(d<1||d>days){html+='<div class="cal-cell blank"></div>';continue;}
+   const date=new Date(y,m,d),k=keyOf(date),st=stateOf(date),info=dayInfo(date);
+   mb+=info.big;ms+=info.small;if(info.checked)mc++;
+   const cls=['cal-cell','heat'+heatLevel(info.total)];
+   if(st==='future')cls.push('locked');
+   if(info.checked)cls.push('checked');
+   if(st==='today')cls.push('today');
+   if(k===cal.selected)cls.push('sel');
+   let sub='';
+   if(st==='future')sub='<span class="cnt">🔒</span>';
+   else if(info.checked)sub='<span class="cnt">✓</span>';
+   else if(info.total>0)sub='<span class="cnt">'+info.total+' 次</span>';
+   if(st==='today')sub+='<span class="cnt" style="color:var(--stamp-deep)">今</span>';
+   html+='<div class="'+cls.join(' ')+'" data-day="'+k+'"><span>'+d+'</span>'+sub+'</div>';
+  }
+  html+='</div>';
+ }
+ $('calGrid').innerHTML=html;
+ $('mBig').textContent=mb;$('mSmall').textContent=ms;$('mChecked').textContent=mc;
+ $('calGrid').querySelectorAll('[data-day]').forEach(el=>el.onclick=()=>{
+  cal.selected=el.dataset.day;
+  const st=stateOf(fromKey(cal.selected));
+  if(st==='future')showToast('🔒','还没到日子','未来日期不能提前打卡，等它变成今天再来。');
+  else if(st==='past')showToast('📦','已封存','这是历史记录，只读，不能修改。');
+  renderCalendar();renderDayDetail();
+ });
+ renderDayDetail();
+}
+function renderDayDetail(){
+ const date=fromKey(cal.selected),st=stateOf(date),info=dayInfo(date);
+ $('dayTitle').textContent=(date.getMonth()+1)+'月'+date.getDate()+'日 · '+(st==='future'?'未来':st==='past'?'历史归档':'今天');
+ $('dayCount').textContent='共 '+info.total+' 次';
+ const head='<div class="between"><span class="small bold">'+(st==='future'?'状态：未开放':st==='past'?'状态：只读封存':info.checked?'状态：今日已打卡':'状态：等待今日打卡')+'</span>'+
+  (st==='future'?'<span class="stamp">未开放</span>':st==='past'?'<span class="stamp">已封存</span>':info.checked?'<span class="stamp">已盖章</span>':'')+'</div><div class="divider"></div>';
+ let body='';
+ if(st==='future'){
+  body='<div class="empty"><span class="big-emoji">🔒</span><p>还没到日子，<br>未来不能提前打卡。</p></div><div class="tiny faint" style="text-align:center">规则：只有「今天」可以打卡，未来日期一律锁定。</div>';
+ }else if(st==='past'){
+  const rows=[{time:'08:1'+(date.getDate()%9),e:'💩',t:'开大 · 香蕉船（4 型）'},{time:'12:4'+(date.getDate()%6),e:'💧',t:'开小 · 常规'},{time:'20:0'+(date.getDate()%9),e:'💧',t:'开小 · 有点多'}];
+  if(info.total===0)body='<div class="empty"><span class="big-emoji">🍃</span><p>这天很安静，<br>什么也没发生。</p></div>';
+  else{
+   for(let i=0;i<Math.min(info.total,4);i++){const r=rows[i%3];body+='<div class="log-item"><div class="log-time">'+r.time+'</div><div class="log-ico">'+r.e+'</div><div class="log-main"><div class="t">'+r.t+'</div><div class="d">历史归档 · 只读</div></div></div>';}
+  }
+  body+='<div class="tiny faint" style="text-align:center;margin-top:10px">历史记录只读，不能修改、补卡或删除。</div>';
+ }else{
+  body='<div class="small muted">今天已记录 '+info.total+' 次（开大 '+info.big+' / 开小 '+info.small+'）</div>';
+  if(!info.checked)body+='<button class="btn btn-shadow btn-sm" style="margin-top:12px;margin-bottom:8px" id="btnCheckIn">✅ 今日打卡 · 盖个章</button><div class="tiny faint">一天只能盖一次章；过去封存，未来锁定。</div>';
+  else body+='<div class="small bold" style="color:#4F6B42;margin-top:12px">✓ 今日已打卡，明天再来。</div>';
+ }
+ $('dayDetail').innerHTML=head+body;
+ const btn=$('btnCheckIn');if(btn)btn.onclick=()=>checkIn(date);
+}
+function checkIn(date){
+ const st=stateOf(date);
+ if(st==='future'){showToast('🔒','还没到日子','未来日期不能提前打卡，等它变成今天再来。');return;}
+ if(st==='past'){showToast('📦','已封存','这是历史记录，只读，不能修改。');return;}
+ const k=keyOf(date);
+ if(cal.checked.has(k)){showToast('📌','今天盖过章了','一天只盖一次，明天再来。');return;}
+ cal.checked.add(k);saveJSON('eliamo_checkins',Array.from(cal.checked));
+ S.streak++;renderToday();renderCalendar();
+ showToast('✅','打卡成功','今天的章盖好了，历史与未来都改不了。');
+}
+function shiftMonth(delta){let y=cal.year,m=cal.month+delta;while(m<0){m+=12;y--;}while(m>11){m-=12;y++;}cal.year=y;cal.month=m;renderCalendar();}
+
+function resolveBadge(b){
+ if(b.dyn==='shots'){const p=Math.min(100,G.shots*10);return Object.assign({},b,{p,ok:p>=100});}
+ if(b.dyn==='hits'){const p=Math.min(100,G.hits*5);return Object.assign({},b,{p,ok:p>=100});}
+ if(b.dyn==='shapes'){const set=new Set(G.shapes);const p=Math.min(100,Math.floor(set.size*100/7));return Object.assign({},b,{p,ok:p>=100});}
+ return b;
+}
+function rarityClass(r){return r==='稀有'?'rare':r==='史诗'?'epic':r==='传说'?'legend':'';}
+function renderBadges(){
+ const all=BADGES.map(resolveBadge),ok=all.filter(b=>b.ok).length;
+ $('badgeEyebrow').textContent='荣誉墙 · 共 '+all.length+' 枚';
+ $('badgeProgressText').textContent=ok+' / '+all.length;
+ $('badgeProgressBar').style.width=(ok/all.length*100)+'%';
+ $('filterRow').innerHTML=FILTERS.map(f=>'<button class="chip '+(S.filter===f.k?'on':'')+'" data-filter="'+f.k+'">'+f.n+'</button>').join('');
+ $('filterRow').querySelectorAll('[data-filter]').forEach(el=>el.onclick=()=>{S.filter=el.dataset.filter;renderBadges();});
+ const shown=all.filter(b=>S.filter==='all'?true:S.filter==='ok'?b.ok:S.filter==='no'?!b.ok:b.r==='传说');
+ $('badgeCount').textContent='当前显示 '+shown.length+' 枚';
+ $('badgeGrid').innerHTML=shown.map((b,i)=>'<div class="badge-card '+(b.ok?'':'locked')+'" data-badge="'+all.indexOf(all.find(x=>x.n===b.n))+'">'+
+  '<div class="between"><span class="bemoji">'+b.e+'</span><span class="rarity-tag '+rarityClass(b.r)+'">'+b.r+'</span></div>'+
+  '<div class="bt">'+b.n+'</div><div class="bd">'+b.d+'</div>'+
+  '<div class="prog"><i style="width:'+b.p+'%;background:'+(b.ok?'var(--grass)':'var(--stamp)')+'"></i></div>'+
+  '<div class="tiny faint" style="margin-top:6px">'+(b.ok?'✓ 已解锁':b.p+'% · 还差一点')+'</div></div>').join('');
+ $('badgeGrid').querySelectorAll('[data-badge]').forEach(el=>el.onclick=()=>showBadge(all[+el.dataset.badge]));
+}
+function showBadge(b){
+ $('popEmoji').textContent=b.e;$('popTitle').textContent=b.n;
+ $('popDesc').textContent=b.r+' · '+b.d+'。'+(b.ok?'已解锁，这份荣誉实至名归。':'还差一点点（'+b.p+'%），继续加油，掌柜的。');
+ $('popCard').classList.add('show');
+}
+
+function validateName(raw){
+ const name=(raw||'').trim();
+ if(!name)return '名字不能空着，人偶会伤心的';
+ if(name.length>12)return '最多 12 个字，名牌写不下';
+ if(/[\n\r\t]/.test(raw))return '名字里不能有换行或制表符';
+ if(/[<>]/.test(name))return '名字里不能带 < 或 >';
+ return '';
+}
+function applyName(){
+ const err=validateName($('dollNameInput').value);
+ if(err){$('nameError').textContent='⚠️ '+err;$('nameError').classList.remove('hidden');showToast('⚠️','名字不合格',err);return;}
+ game.name=$('dollNameInput').value.trim();
+ $('nameError').classList.add('hidden');
+ renderGame();showToast('🪧','人偶已就位','「'+game.name+'」站好了，准备接招。');
+}
+function trajectory(kind,t){
+ const x0=45,y0=190,x1=250,y1=92;
+ const lift=kind==='heavy'?10:kind==='fast'?130:kind==='wobble'?70:kind==='straight'?145:55;
+ const cx=(x0+x1)/2,u=1-t;
+ let x=u*u*x0+2*u*t*cx+t*t*x1;
+ const y=u*u*y0+2*u*t*lift+t*t*y1;
+ if(kind==='wobble')x+=Math.sin(t*18)*10;
+ return [x,y];
+}
+function renderGame(){
+ const a=AMMO.find(x=>x.id===game.ammo);
+ $('dollNameLabel').textContent=game.name;$('namePlate').textContent=game.name;
+ $('ammoPower').textContent='威力 '+'★'.repeat(a.p);
+ $('ammoQuip').textContent=a.q;
+ $('fireEmoji').textContent=a.e;$('fireTitle').textContent=game.flying?'飞行中…':'发射！';
+ $('fireSub').textContent=game.flying?'这一坨正在赶路':'把「'+a.n+'」糊到人偶脸上';
+ $('btnFire').classList.toggle('disabled',game.flying);
+ $('ammoRow').innerHTML=AMMO.map(x=>'<button class="chip shape-chip '+(game.ammo===x.id?'on':'')+'" data-ammo="'+x.id+'"><span class="se">'+x.e+'</span><span class="sn">'+x.n+'</span></button>').join('');
+ $('ammoRow').querySelectorAll('[data-ammo]').forEach(el=>el.onclick=()=>{if(game.flying)return;game.ammo=+el.dataset.ammo;renderGame();});
+ $('gShots').textContent=game.shots;$('gHits').textContent=game.hits;$('gCombo').textContent=game.combo;$('gScore').textContent=game.score;
+ $('faceNormal').classList.toggle('hidden',game.hit);
+ $('faceHit').classList.toggle('hidden',!game.hit);
+ $('hitWord').classList.toggle('hidden',!game.hit||game.flying);
+ $('stageHint').textContent=game.flying?'飞行中…':game.hit?'已命中，可以再来一发':'人偶已就位，选个弹体吧';
+ $('splatLayer').innerHTML=game.splats.map(s=>'<div class="splat" style="left:'+s.x+'px;top:'+s.y+'px;transform:rotate('+s.r+'deg)">'+s.e+'</div>').join('');
+ $('hitQuipCard').classList.toggle('hidden',!game.quip);
+ $('hitQuip').textContent=game.quip;
+}
+function spawnParticles(color){
+ for(let i=0;i<16;i++){
+  const el=document.createElement('div');el.className='particle';el.style.background=color;
+  const ang=i*137.5*Math.PI/180,r=92;
+  $('particleLayer').appendChild(el);
+  requestAnimationFrame(()=>{el.style.transform='translate('+(Math.cos(ang)*r)+'px,'+(Math.sin(ang)*r)+'px) rotate(360deg)';el.style.opacity='0';});
+  setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},600);
+ }
+}
+function fire(){
+ if(game.flying)return;
+ const a=AMMO.find(x=>x.id===game.ammo);
+ game.flying=true;game.shots++;G.shots++;G.shapes.push(a.id);saveJSON('eliamo_game',G);
+ const p=$('projectile');p.textContent=a.e;p.classList.remove('hidden');p.style.transform='translate(45px,190px)';
+ renderGame();
+ const t0=performance.now(),dur=520;
+ function frame(t){
+  const q=Math.min(1,(t-t0)/dur),pos=trajectory(a.flight,q);
+  p.style.transform='translate('+pos[0]+'px,'+pos[1]+'px) rotate('+(q*720)+'deg)';
+  if(q<1)requestAnimationFrame(frame);else land(a);
+ }
+ requestAnimationFrame(frame);
+}
+function land(a){
+ $('projectile').classList.add('hidden');$('projectile').style.transform='';
+ game.flying=false;game.hits++;game.combo++;game.score+=a.p*10+game.combo*2;
+ G.hits++;saveJSON('eliamo_game',G);
+ game.splats.push({e:a.e,x:8+Math.random()*70,y:12+Math.random()*90,r:-30+Math.random()*60});
+ if(game.splats.length>8)game.splats.shift();
+ game.hit=true;game.quip=rand(HIT_QUIPS);
+ spawnParticles(a.c);
+ $('dollWrap').classList.add('hit-shake');setTimeout(()=>$('dollWrap').classList.remove('hit-shake'),300);
+ renderGame();renderBadges();showToast('💥','命中！',game.quip);
+}
+function resetGame(){
+ game.name='讨厌的周一';game.ammo=4;game.shots=0;game.hits=0;game.combo=0;game.score=0;
+ game.splats=[];game.flying=false;game.hit=false;game.quip='';
+ $('dollNameInput').value=game.name;$('nameError').classList.add('hidden');
+ $('projectile').classList.add('hidden');$('particleLayer').innerHTML='';
+ renderGame();showToast('🔄','对局已重置','人偶擦干净了，累计战绩仍保留给荣誉墙。');
+}
+
+function renderShapeChips(){
+ $('shapeRow').innerHTML=SHAPES.map(s=>'<button class="chip shape-chip '+(S.shape===s.id?'on':'')+'" data-shape="'+s.id+'"><span class="se">'+s.e+'</span><span class="sn">'+s.n+'</span></button>').join('');
+ const s=SHAPES.find(x=>x.id===S.shape)||SHAPES[3];
+ $('shapeHint').textContent='第 '+s.id+' 型 · '+s.n+'（'+s.d+'）';
+ $('shapeRow').querySelectorAll('[data-shape]').forEach(b=>b.onclick=()=>{S.shape=+b.dataset.shape;renderShapeChips();});
+}
+function renderSheet(){
+ $('sheetTitle').textContent=S.sheetType==='big'?'记一笔 · 开大':'记一笔 · 开小';
+ $('bigOnly').classList.toggle('hidden',S.sheetType!=='big');
+ $('typeRow').querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('on',b.dataset.type===S.sheetType));
+ $('minuteRow').innerHTML=MINUTES.map((m,i)=>'<button class="chip '+(S.minutes===i?'on':'')+'" data-min="'+i+'">'+m+'</button>').join('');
+ $('minuteRow').querySelectorAll('[data-min]').forEach(b=>b.onclick=()=>{S.minutes=+b.dataset.min;renderSheet();});
+ $('moodRow').innerHTML=MOODS.map((m,i)=>'<button class="chip '+(S.mood===i?'on':'')+'" data-mood="'+i+'">'+m.e+' '+m.n+'</button>').join('');
+ $('moodRow').querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{S.mood=+b.dataset.mood;renderSheet();});
+ $('amountLabel').textContent=AMOUNTS[S.amount-1];$('amountRange').value=S.amount;
+ renderShapeChips();
+}
+function renderReport(){
+ const tb=[['早八',18],['午间',9],['傍晚',12],['深夜',4]],max=Math.max(...tb.map(x=>x[1]));
+ $('timeBars').innerHTML=tb.map((x,i)=>'<div class="bar-col"><div class="bar" style="height:'+Math.round(x[1]/max*80)+'%;background:'+(i===0?'var(--stamp)':'var(--grass)')+'"></div><span class="lb">'+x[0]+'</span></div>').join('');
+ const sb=[1,2,5,9,3,1,1],sm=Math.max(...sb);
+ $('shapeBars').innerHTML=sb.map((v,i)=>'<div class="shape-row"><span class="nm">'+(i+1)+' 型</span><span class="track"><span class="fill" style="display:block;width:'+Math.round(v/sm*100)+'%"></span></span><span class="vv">'+v+'</span></div>').join('');
+}
+function renderSwitches(){
+ const list=[{k:'remind',t:'饭点催一催',d:'每天 12:30 提醒你诚实交代'},{k:'privacy',t:'隐私模式 · 防偷看',d:'锁屏上不显示今日战绩'},{k:'shake',t:'摇一摇彩蛋',d:'摇手机听个响，图一乐'},{k:'quiet',t:'深夜静音',d:'23:00 后不弹任何提醒'}];
+ $('switchList').innerHTML=list.map(x=>'<div class="switch-row"><div><div class="st">'+x.t+'</div><div class="sd">'+x.d+'</div></div><div class="sw '+(S.settings[x.k]?'on':'')+'" data-sw="'+x.k+'"><i></i></div></div>').join('');
+ $('switchList').querySelectorAll('[data-sw]').forEach(el=>el.onclick=()=>{const k=el.dataset.sw;S.settings[k]=!S.settings[k];renderSwitches();showToast('⚙️','设置已保存','改好了，掌柜的。');});
+}
+function switchTab(t){
+ S.tab=t;
+ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='s-'+t));
+ document.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.tab===t;b.classList.toggle('active',on);b.classList.toggle('super',b.dataset.tab==='game');});
+ if(t==='report'&&!S.reportLoaded)loadReport();
+}
+function enterGame(){if(S.tab!=='game')S.returnTab=S.tab;switchTab('game');}
+function leaveGame(){switchTab(S.returnTab);}
+function loadReport(){
+ S.reportLoaded=false;$('reportLoading').classList.remove('hidden');$('reportBody').classList.add('hidden');
+ setTimeout(()=>{S.reportLoaded=true;$('reportLoading').classList.add('hidden');$('reportBody').classList.remove('hidden');renderReport();},600);
+}
+function openOverlay(id){$(id).classList.add('open');}
+function closeOverlay(id){$(id).classList.remove('open');}
+function showToast(emoji,title,desc){
+ $('toastEmoji').textContent=emoji;$('toastTitle').textContent=title;$('toastDesc').textContent=desc;
+ $('toast').classList.add('show');clearTimeout(window.__toastT);
+ window.__toastT=setTimeout(()=>$('toast').classList.remove('show'),2600);
+}
+function confetti(){
+ const c=$('confetti'),ctx=c.getContext('2d'),r=$('phone').getBoundingClientRect();
+ c.width=r.width;c.height=r.height;
+ const colors=['#E8836B','#E6B84F','#8AA37B','#A97142','#5FA98B','#D89B22'];
+ const ps=Array.from({length:46},()=>({x:c.width*.5+(Math.random()-.5)*60,y:c.height*.42,vx:(Math.random()-.5)*9,vy:-Math.random()*9-3,w:4+Math.random()*6,h:6+Math.random()*8,c:rand(colors),a:Math.random()*6}));
+ const t0=performance.now();
+ function frame(t){
+  ctx.clearRect(0,0,c.width,c.height);const dt=Math.min((t-t0)/16,2);
+  ps.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=.42*dt;p.a+=.14*dt;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});
+  if(t-t0<900)requestAnimationFrame(frame);else ctx.clearRect(0,0,c.width,c.height);
+ }
+ requestAnimationFrame(frame);
+}
+function openSheet(type){S.sheetType=type;S.shape=type==='big'?4:null;S.amount=3;S.minutes=1;S.mood=0;S.note='';$('noteInput').value='';$('formError').classList.add('hidden');resetSlide();renderSheet();openOverlay('recordOverlay');}
+function resetSlide(){
+ S.slideX=0;S.sliding=false;const t=$('slideThumb');
+ t.style.transform='translateX(0)';t.innerHTML='<svg class="ic"><use href="#i-chevron"/></svg>';
+ $('slideTrack').classList.remove('ok','err');$('slideLabel').textContent='向右滑动 → 盖章出货';
+}
+function submitRecord(){
+ const track=$('slideTrack');
+ if(S.sheetType==='big'&&!S.shape){$('formError').classList.remove('hidden');track.classList.add('err','shake');setTimeout(()=>track.classList.remove('shake'),320);return;}
+ $('formError').classList.add('hidden');track.classList.add('ok');$('slideLabel').textContent='正在盖章…';
+ $('slideThumb').innerHTML='<span style="font-size:20px">⏳</span>';
+ setTimeout(()=>{
+  const now=new Date(),hh=String(9).padStart(2,'0')+':'+String(now.getMinutes()%60).padStart(2,'0');
+  if(S.sheetType==='big'){S.big++;const s=SHAPES.find(x=>x.id===S.shape);S.records.unshift({time:hh,type:'big',title:'开大 · '+s.n+'（'+s.id+' 型）',desc:MINUTES[S.minutes]+' · '+MOODS[S.mood].n+(S.note?' · '+S.note:''),emoji:'💩'});}
+  else{S.small++;S.records.unshift({time:hh,type:'small',title:'开小 · '+AMOUNTS[S.amount-1],desc:MINUTES[S.minutes]+' · '+MOODS[S.mood].n,emoji:'💧'});}
+  renderToday();renderCalendar();confetti();closeOverlay('recordOverlay');
+  showToast('🎉',S.sheetType==='big'?'出货成功！':'放水成功！',rand(QUIPS));
+  setTimeout(resetSlide,320);
+ },520);
+}
+function initSlide(){
+ const track=$('slideTrack'),thumb=$('slideThumb');
+ const maxX=()=>track.clientWidth-thumb.clientWidth-8;
+ const move=e=>{if(!S.sliding)return;const cx=(e.touches?e.touches[0].clientX:e.clientX);
+  const startX=track.getBoundingClientRect().left+thumb.clientWidth/2+4;
+  const x=Math.max(0,Math.min(maxX(),cx-startX));S.slideX=x;thumb.style.transform='translateX('+x+'px)';
+  if(x>maxX()*.55)$('slideLabel').textContent='松手就盖章 ✓';};
+ const end=()=>{if(!S.sliding)return;S.sliding=false;
+  if(S.slideX>maxX()*.6){thumb.style.transform='translateX('+maxX()+'px)';submitRecord();}else resetSlide();};
+ thumb.addEventListener('pointerdown',e=>{e.preventDefault();S.sliding=true;thumb.setPointerCapture(e.pointerId);});
+ track.addEventListener('pointermove',move);track.addEventListener('pointerup',end);track.addEventListener('pointercancel',end);
+}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;t==='game'?enterGame():switchTab(t);});
+$('btnSettings').onclick=()=>{renderSwitches();openOverlay('settingsOverlay');};
+$('btnBig').onclick=()=>openSheet('big');
+$('btnSmall').onclick=()=>openSheet('small');
+$('btnClearToday').onclick=()=>{S.records=[];S.big=0;S.small=0;renderToday();renderCalendar();showToast('📄','已清空演示数据','空态长这样，点「开大」再记一笔就回来了。');};
+$('btnShake').onclick=()=>{$('phone').classList.add('shake');setTimeout(()=>$('phone').classList.remove('shake'),320);showToast('🫨','咚！','摇出一句：今天也要顺顺畅畅的呀。');};
+$('prevMonth').onclick=()=>shiftMonth(-1);
+$('nextMonth').onclick=()=>shiftMonth(1);
+$('monthLabel').onclick=()=>{cal.year=TODAY.getFullYear();cal.month=TODAY.getMonth();cal.selected=keyOf(TODAY);renderCalendar();};
+$('btnRegen').onclick=()=>{loadReport();showToast('📊','重新召集院士','正在重算本周战报…');};
+$('btnExport').onclick=()=>{$('exportErr').classList.remove('hidden');$('exportOk').classList.add('hidden');};
+$('btnRetry').onclick=()=>{$('exportErr').classList.add('hidden');$('exportOk').classList.remove('hidden');showToast('✅','导出成功','其实是假的，但开心是真的。');};
+$('popClose').onclick=()=>$('popCard').classList.remove('show');
+$('typeRow').querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{S.sheetType=b.dataset.type;S.shape=S.sheetType==='big'?4:null;resetSlide();renderSheet();});
+$('amountRange').oninput=e=>{S.amount=+e.target.value;$('amountLabel').textContent=AMOUNTS[S.amount-1];};
+$('noteInput').oninput=e=>{S.note=e.target.value.trim();};
+$('btnGameBack').onclick=leaveGame;
+$('btnBack2').onclick=leaveGame;
+$('btnSetName').onclick=applyName;
+$('dollNameInput').addEventListener('input',()=>$('nameError').classList.add('hidden'));
+$('dollNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')applyName();});
+$('btnFire').onclick=fire;
+$('btnReset').onclick=resetGame;
+document.querySelectorAll('[data-close]').forEach(el=>el.onclick=()=>closeOverlay(el.dataset.close==='record'?'recordOverlay':'settingsOverlay'));
+
+renderToday();renderCalendar();renderBadges();renderSheet();renderSwitches();renderGame();initSlide();
+</script>
+</body>
+</html>
